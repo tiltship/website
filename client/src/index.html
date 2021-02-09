@@ -1,0 +1,160 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <!-- Google Tag Manager -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= GA_MEASUREMENT_ID %>"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '<%= GA_MEASUREMENT_ID %>');
+    gtag('consent', 'default', {'ad_storage': 'denied', 'analytics_storage': 'denied'})
+  </script>
+  <!-- End Google Tag Manager -->
+
+  <!-- Facebook Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+     n.queue=[];t=b.createElement(e);t.async=!0;
+     t.src=v;s=b.getElementsByTagName(e)[0];
+     s.parentNode.insertBefore(t,s)}(window, document,'script',
+                                     'https://connect.facebook.net/en_US/fbevents.js');
+
+    fbq('init', '<%= FB_PIXEL_ID %>');
+    fbq('consent', 'revoke');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+                 src="https://www.facebook.com/tr?id=<%= FB_PIXEL_ID %>&ev=PageView&noscript=1"
+                 /></noscript>
+  <!-- End Facebook Pixel Code -->
+
+  <meta charset="utf-8">
+  <title>TILTSHIP</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preload"
+        as="style"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Kanit:wght@900&family=Mukta&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Kanit:wght@900&family=Mukta&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <!-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5J2WJ2K" -->
+  <!--                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> -->
+  <!-- End Google Tag Manager (noscript) -->
+  <div class="intro">
+  <div class="container">
+    <div class="title">
+      <h1> Tiltship</h1>
+      <h3>money vs. fossil fuels</h3>
+    </div>
+  </div>
+  </div>
+
+  <div class="bg">
+    <div class="content">
+      <div class="container">
+
+        <section>
+
+          <h2></h2>
+        <div class="explain">
+          <p>The value of fossil fuel companies is derived from the amount of fuel they can sell. </p>
+
+          <p>Citizens in democracies around the world want to burn less fossil fuels. </p>
+
+          <p>If citizens win, the fossil fuel companies lose. </p>
+        </div>
+
+        </section>
+
+        <section>
+          <h2> It's a question of when </h2>
+
+          <div class="explain">
+            <p>Everybody knows we will drastically reduce our fossil fuel consumption sooner or later. </p>
+
+            <p>For fossil fuel companies, the later the better. For the rest of us, the sooner the better. </p>
+
+            <p>The votes are on our side, but lobbying money isn't. </p>
+
+            <p> So we change that. </p>
+          </div>
+
+        </section>
+
+        <section>
+          <h2> We use the system </h2>
+
+          <div class="explain">
+            <p>The plan is simple: </p>
+
+            <p>1. We create an investment fund that takes an aggressive short position against fossil fuel companies.</p>
+
+            <p>2. We put money into lobbying governments to enact legislation that helps the climate and hurts the fossil fuel companies.</p>
+
+            <p>3. When the pro-climate legislation is enacted and the value of fossil fuel companies tanks, the value of our short position goes up and we win back the money from lobbying.</p>
+
+            <p>4. We win. The fossil fuel companies lose. No compromises.</p>
+
+          </div>
+        </section>
+
+        <section>
+          <h2>Concentrating dispersed interests</h2>
+
+          <div class="explain">
+            <p> Fossil fuel companies have won thus far because they are a small, concentrated group of people with a lot to lose. </p>
+
+            <p> We, the rest of the people, are many. What we have to lose is less tangible: part of each of our souls and the heritage of humanity.</p>
+
+            <p>Tiltship is a plan to gather our disperesed interests together and distill them into a vehicle that makes change. </p>
+
+            <p>A vehicle made of money.</p>
+          </div>
+        </section>
+
+      </div>
+
+      <canvas id="tree"></canvas>
+    </div>
+
+
+    <div id="app" class="container signup"></div>
+
+
+
+  </div>
+    <footer>
+      <ul>
+        <li>Tiltship LLC</li>
+        <li><a href="mailto:info@tiltship.com">info@tiltship.com</a></li>
+        <li> <a href="/privacy">Data privacy policy</a></li>
+        <li><a href="mailto:privacy@tiltship.com">Data access or deletion requests</a></li>
+</ul>
+    </footer>
+
+
+</body>
+
+</html>
