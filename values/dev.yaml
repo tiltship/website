@@ -1,0 +1,35 @@
+coatcheck:
+  replicaCount: 1
+
+  image:
+    tag: v0.0.1
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: false
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  
+
+cockroachdb:
+  statefulset:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 500Mi
+  conf:
+    budget:
+      maxUnavailable: 0
+  tls:
+    enabled: no
+  storage:
+    persistentVolume:
+      size: 1Gi
+

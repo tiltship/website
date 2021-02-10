@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "coatcheck.fullname" . }}
+  labels:
+    {{- include "tiltship.labels" . | nindent 4 }}
+    {{- include "coatcheck.selectorLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.coatcheck.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "coatcheck.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.coatcheck.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "coatcheck.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: coatcheck
+          image: "{{ .Values.coatcheck.image.repository }}:{{ .Values.coatcheck.image.tag  }}"
+          ports:
+            - name: http
+              containerPort: 1323
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          envFrom:
+          {{- if .Values.coatcheck.envFrom }}
+          - secretRef:
+              name: "{{ .Values.coatcheck.envFrom }}"
+          {{- end }}
+          env:
+            {{- toYaml .Values.coatcheck.env | nindent 12 }}
+          resources:
+            {{- toYaml .Values.coatcheck.resources | nindent 12 }}
+      {{- with $.Values.coatcheck.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $ | nindent 8 }}
+      {{- end }}
+    {{- with $.Values.coatcheck.affinity }}
+      affinity:
+        {{- toYaml $ | nindent 8 }}
+    {{- end }}
+    {{- with $.Values.coatcheck.tolerations }}
+      tolerations:
+        {{- toYaml $ | nindent 8 }}
+    {{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "coatcheck.fullname" . }}
+  labels:
+    {{- include "tiltship.labels" . | nindent 4 }}
+    {{- include "coatcheck.selectorLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.coatcheck.service.type }}
+  ports:
+    - port: {{ .Values.coatcheck.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "coatcheck.selectorLabels" . | nindent 6 }}
+
+---
+
+{{- if .Values.coatcheck.ingress.enabled -}}
+{{- $fullName := include "coatcheck.fullname" . -}}
+{{- $svcPort := .Values.coatcheck.service.port -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "tiltship.labels" . | nindent 4 }}
+  {{- with .Values.coatcheck.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.coatcheck.ingress.tls }}
+  tls:
+    {{- range .Values.coatcheck.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.coatcheck.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+          {{- end }}
+    {{- end }}
+{{- end }}

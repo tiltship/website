@@ -1,0 +1,32 @@
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+coatcheck:
+  replicaCount: 1
+
+  image:
+    repository: tiltship/coatcheck
+    tag: v0.0.1
+
+  envFrom: ""
+  env: []
+
+  podAnnotations: {}
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: false
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+cockroachdb:
+  image:
+    tag: v20.2.4

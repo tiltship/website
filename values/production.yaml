@@ -1,0 +1,45 @@
+coatcheck:
+  replicaCount: 1
+
+  image:
+    tag: v0.0.1
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: coatcheck.tiltship.com
+        paths:
+          - path: "/"
+    tls:
+      - secretName: tiltship-coatcheck-tls
+        hosts:
+          - coatcheck.tiltship.com
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  
+
+cockroachdb:
+  statefulset:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 500Mi
+  conf:
+    budget:
+      maxUnavailable: 0
+  tls:
+    enabled: no
+  storage:
+    persistentVolume:
+      size: 5Gi
+      # storageClass: "pd-ssd"
