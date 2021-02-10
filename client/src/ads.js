@@ -38,9 +38,9 @@ function getFingerprint() {
     .load()
     .then(fp => fp.get())
     .then(res => {
-      // const {languages, timezone, platform} = res
-      // return {clientId: }
-
+      // this is massive and ugly and i dunno what to do with
+      // it anyways...
+      delete res.components.canvas
       return res
     })
 }
