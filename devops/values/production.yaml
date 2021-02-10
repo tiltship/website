@@ -21,6 +21,19 @@ coatcheck:
         hosts:
           - coatcheck.tiltship.com
 
+  envFrom: ""
+  env:
+  - name: PG_DATABASE
+    value: "tiltship"
+  - name: PG_USER
+    value: "captain"
+  - name: PG_PASSWORD
+    value: ""
+  - name: PG_HOST
+    value: "tsprod-cockroachdb-public"
+  - name: PG_PORT
+    value: "26257"
+
   resources: {}
   nodeSelector: {}
   tolerations: []
