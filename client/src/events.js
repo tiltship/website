@@ -10,3 +10,7 @@ export function spent(seconds, tag) {
     fbq('trackCustom', tag)
   }, seconds * 1000)
 }
+
+export function signup(email) {
+  gtag('event', 'sign_up')
+}

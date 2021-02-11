@@ -1,5 +1,6 @@
 <script>
   import src from './img/loading.svg'
+  import { signup } from './events'
 
   let state = 'empty'
   let email = null
@@ -16,6 +17,9 @@
   const SERVER_URL = process.env.SERVER_URL || 'http://localhost:1323'
 
   const sendData = (email, td) => {
+
+    signup(email)
+
     const body = { 'email': email, 'tracking_data': td }
     const url = `${SERVER_URL}/signups`
     const opts = { method: 'POST',
