@@ -18,6 +18,7 @@ function getFbc() {
 }
 
 function getGclid() {
+  // gtag('get', 'gclid')???
   const id = new URL(window.location).searchParams.get('gclid')
   return id || Cookies.get('gclid')
 }
