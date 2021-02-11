@@ -1,2 +1,5 @@
 [context.production.environment]
 SERVER_URL="https://coatcheck.tiltship.com"
+GA_MEASUREMENT_ID="G-SB3EP4KHJ4"
+AW_CONVERSION_ID="UA-186132284-1"
+FB_PIXEL_ID="232358961831438"
