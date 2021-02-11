@@ -1,10 +1,9 @@
 <script>
   import src from './img/loading.svg'
-  import { signup } from './events'
+  import { getAdIds } from ('./ads')
 
   let state = 'empty'
   let email = null
-  let cookies = true
   let ads = null
 
   const handleCancel = e => {
@@ -17,15 +16,11 @@
   const SERVER_URL = process.env.SERVER_URL || 'http://localhost:1323'
 
   const sendData = (email, td) => {
-
-    signup(email)
-
-    const body = { 'email': email, 'tracking_data': td }
+    const body = { email: email, tracking_data: td }
     const url = `${SERVER_URL}/signups`
     const opts = { method: 'POST',
                    headers: {'Content-Type': 'application/json'},
                    body: JSON.stringify(body) }
-
     return fetch(url, opts)
   }
 
@@ -36,9 +31,8 @@
     const typeform = import('@typeform/embed')
 
     // send to server
-    import('./ads')
-      .then(ads => ads.getAdIds())
-      .then(res => sendData(email, res.data))
+    getAdIds()
+      .then(data => sendData(email, data))
       .then(async res => {
         const r = await res.json();
         if (!res.ok) {
@@ -78,7 +72,7 @@
   <div id="empty-form" class="form-area">
     <p> Sign up to our email list by providing an email address below and we'll send you news and updates about the project. </p>
 
-    <p>You can unsubscribe at any time by going to <a href="/unsubscribe">tiltship.com/unsubscribe</a> or by a link provided in the emails. Your email will be kept safe and stored along with ad tracking data that records how you got here. We did not use cookies. You can request this personal data or request to have it deleted at any time via <a href="mailto:privacy@tiltship.com">privacy@tiltship.com. </a></p>
+    <p>You can unsubscribe at any time by going to <a href="/unsubscribe">tiltship.com/unsubscribe</a> or by a link provided in the emails. Your email will be kept safe and stored along with ad tracking data that records how you got here and basic information about your device. We did not place any cookies in your browser. You can request this personal data or request to have it deleted at any time via <a href="mailto:privacy@tiltship.com">privacy@tiltship.com. </a></p>
     <form id="email-form" on:submit={handleSubmit} action="">
       <input bind:value={email} type="email" required="true" placeholder="Email" name="email" />
       <button>Submit</button>
