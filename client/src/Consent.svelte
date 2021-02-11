@@ -72,7 +72,7 @@
   <div id="empty-form" class="form-area">
     <p> Sign up to our email list by providing an email address below and we'll send you news and updates about the project. </p>
 
-    <p>You can unsubscribe at any time by going to <a href="/unsubscribe">tiltship.com/unsubscribe</a> or by a link provided in the emails. Your email will be kept safe and stored along with ad tracking data that records how you got here and basic information about your device. We did not place any cookies in your browser. You can request this personal data or request to have it deleted at any time via <a href="mailto:privacy@tiltship.com">privacy@tiltship.com. </a></p>
+    <p>You can unsubscribe at any time by going to <a href="/unsubscribe">tiltship.com/unsubscribe</a> or by a link provided in the emails. Your email will be kept safe and stored along with ad tracking data that records how you got here. We did not place any cookies in your browser. You can request this personal data or request to have it deleted at any time via <a href="mailto:privacy@tiltship.com">privacy@tiltship.com. </a></p>
     <form id="email-form" on:submit={handleSubmit} action="">
       <input bind:value={email} type="email" required="true" placeholder="Email" name="email" />
       <button>Submit</button>
