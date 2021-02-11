@@ -9,6 +9,6 @@ const app = new Consent({
 
 
 drawTree(document.querySelector('#tree'))
-spent(40, 'dwelled')
+spent(30, 'dwelled')
 
 export default app
