@@ -1,6 +1,6 @@
 <script>
   import src from './img/loading.svg'
-  import { getAdIds } from ('./ads')
+  import { getAdIds } from './ads'
 
   let state = 'empty'
   let email = null
