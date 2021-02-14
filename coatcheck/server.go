@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/jackc/pgconn"
@@ -17,6 +18,15 @@ import (
 type SignupRequest struct {
 	Email        string          `json:"email"`
 	TrackingData json.RawMessage `json:"tracking_data"`
+}
+
+type EventRequest struct {
+	Subtype      string          `json:"subtype"`
+	TrackingData json.RawMessage `json:"tracking_data"`
+}
+
+type CreationResponse struct {
+	Created time.Time `json:"created"`
 }
 
 type Server struct {
@@ -33,8 +43,9 @@ func (s *Server) CreateSignup(c echo.Context) error {
 		return err
 	}
 
-	query := `INSERT INTO signups(email, tracking_data) values($1, $2)`
-	_, err := s.pool.Exec(context.Background(), query, signup.Email, signup.TrackingData)
+	query := `INSERT INTO signups(email, tracking_data) VALUES($1, $2) RETURNING created`
+	var created time.Time
+	err := s.pool.QueryRow(context.Background(), query, signup.Email, signup.TrackingData).Scan(&created)
 
 	if e, ok := err.(*pgconn.PgError); ok {
 		switch e.Code {
@@ -50,8 +61,22 @@ func (s *Server) CreateSignup(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, signup)
+	return c.JSON(http.StatusCreated, CreationResponse{created})
+}
 
+func (s *Server) CreateEvent(c echo.Context) error {
+	event := new(EventRequest)
+	if err := c.Bind(event); err != nil {
+		return err
+	}
+
+	query := `INSERT INTO events(subtype, tracking_data) VALUES($1, $2) RETURNING created`
+	var created time.Time
+	err := s.pool.QueryRow(context.Background(), query, event.Subtype, event.TrackingData).Scan(&created)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusCreated, CreationResponse{created})
 }
 
 func getPool(cfg *Config) *pgxpool.Pool {
@@ -96,8 +121,10 @@ func main() {
 	server := &Server{pool}
 
 	e := echo.New()
+
 	e.Use(middleware.CORS())
 	e.POST("/signups", server.CreateSignup)
+	e.POST("/events", server.CreateEvent)
 	e.GET("/health", server.Health)
 
 	e.Logger.Fatal(e.Start(":1323"))

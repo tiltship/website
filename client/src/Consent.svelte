@@ -1,5 +1,6 @@
 <script>
   import src from './img/loading.svg'
+  import { post } from './api'
   import { getAdIds } from './ads'
 
   let state = 'empty'
@@ -17,11 +18,7 @@
 
   const sendData = (email, td) => {
     const body = { email: email, tracking_data: td }
-    const url = `${SERVER_URL}/signups`
-    const opts = { method: 'POST',
-                   headers: {'Content-Type': 'application/json'},
-                   body: JSON.stringify(body) }
-    return fetch(url, opts)
+    return post('signups', body)
   }
 
   const handleSubmit = (e) => {
