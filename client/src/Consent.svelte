@@ -1,20 +1,21 @@
 <script>
   import src from './img/loading.svg'
   import { post } from './api'
-  import { getAdIds } from './ads'
+  import { getTrackingParams } from './ads'
 
+  // state variables
   let state = 'empty'
   let email = null
-  let ads = null
 
-  const handleCancel = e => {
-    if (e.target === e.currentTarget) {
-      e.preventDefault()
-      state = 'empty'
-    }
-  }
+  // tracking data
+  const data = getTrackingParams()
 
-  const SERVER_URL = process.env.SERVER_URL || 'http://localhost:1323'
+  // Make page_visit event
+  setTimeout(() => {
+    const event = {subtype: 'page_visit', tracking_data: data}
+    post('events', event)
+      .catch(e => console.error(`Error sending page_visit: ${e}`))
+  }, 5000)
 
   const sendData = (email, td) => {
     const body = { email: email, tracking_data: td }
@@ -28,8 +29,7 @@
     const typeform = import('@typeform/embed')
 
     // send to server
-    getAdIds()
-      .then(data => sendData(email, data))
+    sendData(email, data)
       .then(async res => {
         const r = await res.json();
         if (!res.ok) {
@@ -43,7 +43,7 @@
         const qs = `email=${email}`
         const typeform = makePopup(`${formUrl}?${qs}`, {
           mode: 'drawer_right',
-          onSubmit: (event) => {
+          onSubmit: () => {
 
             typeform.close()
             state = 'finished'

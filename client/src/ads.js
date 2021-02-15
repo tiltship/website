@@ -5,14 +5,14 @@ function getFbc() {
   return `fb.1.${now}.${fbclid}`
 }
 
-function getGclid() {
-  const id = new URL(window.location).searchParams.get('gclid')
-  if (id) return id
-}
-
-export function getAdIds() {
-  return Promise.all([getFbc(), getGclid()]).then(([fbc, gclid ]) => {
-    return { fbc, gclid }
+export function getTrackingParams() {
+  const obj = {}
+  const url = new URL(window.location)
+  url.searchParams.forEach((v, k) => {
+    obj[k] = v
   })
 
+  window.history.replaceState({}, document.title, url.pathname)
+  const fbc = getFbc()
+  return {...obj, fbc }
 }
