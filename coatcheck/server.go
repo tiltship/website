@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/caarlos0/env/v6"
@@ -20,13 +21,13 @@ type SignupRequest struct {
 	TrackingData json.RawMessage `json:"tracking_data"`
 }
 
-type EventRequest struct {
+type Event struct {
 	Subtype      string          `json:"subtype"`
 	TrackingData json.RawMessage `json:"tracking_data"`
 }
 
 type CreationResponse struct {
-	Created time.Time `json:"created"`
+	Created *time.Time `json:"created"`
 }
 
 type Server struct {
@@ -61,22 +62,45 @@ func (s *Server) CreateSignup(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, CreationResponse{created})
+	return c.JSON(http.StatusCreated, CreationResponse{&created})
 }
 
-func (s *Server) CreateEvent(c echo.Context) error {
-	event := new(EventRequest)
-	if err := c.Bind(event); err != nil {
-		return err
-	}
-
+func (s *Server) CreateEventHandler(c echo.Context, event *Event) error {
 	query := `INSERT INTO events(subtype, tracking_data) VALUES($1, $2) RETURNING created`
 	var created time.Time
 	err := s.pool.QueryRow(context.Background(), query, event.Subtype, event.TrackingData).Scan(&created)
+
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusCreated, CreationResponse{created})
+	return c.JSON(http.StatusCreated, CreationResponse{&created})
+}
+
+func (s *Server) CreateEvent(c echo.Context) error {
+	event := new(Event)
+	if err := c.Bind(event); err != nil {
+		return err
+	}
+	return s.CreateEventHandler(c, event)
+}
+
+func simpleQueryValues(vals url.Values) map[string]string {
+	m := map[string]string{}
+	for k, v := range vals {
+		m[k] = v[len(v)-1]
+	}
+	return m
+}
+
+func (s *Server) CreateCustomEvent(c echo.Context) error {
+	vals := simpleQueryValues(c.QueryParams())
+	b, err := json.Marshal(vals)
+	if err != nil {
+		return err
+	}
+	subtype := c.Param("subtype")
+	event := &Event{subtype, b}
+	return s.CreateEventHandler(c, event)
 }
 
 func getPool(cfg *Config) *pgxpool.Pool {
@@ -125,6 +149,7 @@ func main() {
 	e.Use(middleware.CORS())
 	e.POST("/signups", server.CreateSignup)
 	e.POST("/events", server.CreateEvent)
+	e.POST("/events/:subtype", server.CreateCustomEvent)
 	e.GET("/health", server.Health)
 
 	e.Logger.Fatal(e.Start(":1323"))

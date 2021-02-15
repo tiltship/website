@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -17,14 +18,14 @@ import (
 
 const (
 	setupSql = `drop table if exists signups;
-               
+
                  create table if not exists signups(
                    email VARCHAR PRIMARY KEY CHECK (email != ''),
                    created TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
                    tracking_data JSON NOT NULL CHECK (tracking_data != 'null'::json)
                  );
 
-                 drop table if exists events;               
+                 drop table if exists events;
                  create table if not exists events(
                    subtype VARCHAR NOT NULL,
                    created TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -130,6 +131,32 @@ func TestEventsPost(t *testing.T) {
 	s := &Server{pool}
 
 	err := s.CreateEvent(c)
+	assert.Nil(t, err)
+
+	res := new(CreationResponse)
+	json.Unmarshal([]byte(rec.Body.String()), res)
+	assert.True(t, res.Created.Before(time.Now()))
+}
+
+func TestCustomQueryEvent(t *testing.T) {
+	pool := testPool()
+	defer pool.Close()
+
+	mustExec(t, pool, setupSql)
+
+	q := make(url.Values)
+	q.Set("foo", "bar")
+	q.Set("baz", "qux")
+	q.Set("baz", "quxx")
+	q.Set("nada", "")
+	req := httptest.NewRequest(http.MethodGet, "/events/custom?"+q.Encode(), nil)
+	rec := httptest.NewRecorder()
+
+	c := echo.New().NewContext(req, rec)
+
+	s := &Server{pool}
+
+	err := s.CreateCustomEvent(c)
 	assert.Nil(t, err)
 
 	res := new(CreationResponse)
