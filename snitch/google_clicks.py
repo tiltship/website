@@ -55,6 +55,10 @@ def get_conversion_action(
     except StopIteration:
         return None
 
+def is_partial_failure_error_present(response):
+    partial_failure = getattr(response, "partial_failure_error", None)
+    code = getattr(partial_failure, "code", None)
+    return code != 0
 
 def _create_click_conversion(
     client: GoogleAdsClient,
@@ -80,6 +84,12 @@ def _create_click_conversion(
     res = conversion_upload_service.upload_click_conversions(
         customer_id, [cc], partial_failure=True
     )
+
+    if is_partial_failure_error_present(res):
+        print('Click conversion failed.')
+        print(res)
+        raise Exception(res)
+
     return res
 
 
