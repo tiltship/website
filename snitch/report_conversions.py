@@ -40,9 +40,9 @@ def main():
     conn = psycopg2.connect(
         dbname=env("PG_DATABASE"),
         user=env("PG_USER"),
-        host=env("PG_PASSWORD"),
-        port=env("PG_HOST"),
-        password=env("PG_PORT"),
+        host=env("PG_HOST"),
+        port=env("PG_PORT"),
+        password=env("PG_PASSWORD"),
     )
 
     consumer = Consumer(conn, "signups_ga", "event_consumer_groups")
