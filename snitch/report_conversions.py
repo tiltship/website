@@ -45,8 +45,9 @@ def main():
         password=env("PG_PASSWORD"),
     )
 
+    conf_path = env("GOOGLE_ADS_YAML_PATH")
     consumer = Consumer(conn, "signups_ga", "event_consumer_groups")
-    client = GoogleAdsClient.load_from_storage("./google-ads.yaml")
+    client = GoogleAdsClient.load_from_storage(conf_path)
     customer_id = env("GOOGLE_CUSTOMER_ID")
 
     work = lambda o, n: report_conversions(conn, client, customer_id, o, n)
