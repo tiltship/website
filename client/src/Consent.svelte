@@ -1,21 +1,20 @@
 <script>
   import src from './img/loading.svg'
   import { post } from './api'
+  import { visit } from './tracker'
   import { getTrackingParams } from './ads'
 
   // state variables
   let state = 'empty'
   let email = null
+  let start = Date.now()
 
   // tracking data
   const data = getTrackingParams()
 
-  // Make page_visit event
-  setTimeout(() => {
-    const event = {subtype: 'page_visit', tracking_data: data}
-    post('events', event)
-      .catch(e => console.error(`Error sending page_visit: ${e}`))
-  }, 5000)
+  // track visit (sends via beacon one page hidden)
+  // use session: session.push(event) to record events
+  const session = visit(data)
 
   const sendData = (email, td) => {
     const body = { email: email, tracking_data: td }

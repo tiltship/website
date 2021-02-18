@@ -14,5 +14,5 @@ export function getTrackingParams() {
 
   window.history.replaceState({}, document.title, url.pathname)
   const fbc = getFbc()
-  return {...obj, fbc }
+  return {...obj, fbc, path: url.pathname }
 }

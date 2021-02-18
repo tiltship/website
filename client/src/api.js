@@ -7,3 +7,7 @@ export function post(path, body) {
                    body: JSON.stringify(body) }
     return fetch(url, opts)
 }
+
+export function beacon(path, body){
+  navigator.sendBeacon(`${SERVER_URL}/${path}`, body)
+}
