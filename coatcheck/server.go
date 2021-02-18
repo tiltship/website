@@ -78,9 +78,15 @@ func (s *Server) CreateEventHandler(c echo.Context, event *Event) error {
 
 func (s *Server) CreateEvent(c echo.Context) error {
 	event := new(Event)
-	if err := c.Bind(event); err != nil {
+
+	// NOTE: we manually decode JSON to allow
+	// for beacons to send JSON w plain text headers
+	req := c.Request()
+	err := json.NewDecoder(req.Body).Decode(event)
+	if err != nil {
 		return err
 	}
+
 	return s.CreateEventHandler(c, event)
 }
 
@@ -147,6 +153,7 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.CORS())
+	e.Use(middleware.Logger())
 	e.POST("/signups", server.CreateSignup)
 	e.POST("/events", server.CreateEvent)
 	e.POST("/events/:subtype", server.CreateCustomEvent)
